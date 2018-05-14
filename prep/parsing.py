@@ -1,6 +1,6 @@
 """Parsing code for DICOMS and contour files"""
 
-import dicom
+import pydicom as dicom
 from dicom.errors import InvalidDicomError
 
 import numpy as np
@@ -15,16 +15,17 @@ def parse_contour_file(filename):
     """
 
     coords_lst = []
+    try:
+        with open(filename, 'r') as infile:
+            for line in infile:
+                coords = line.strip().split()
 
-    with open(filename, 'r') as infile:
-        for line in infile:
-            coords = line.strip().split()
-
-            x_coord = float(coords[0])
-            y_coord = float(coords[1])
-            coords_lst.append((x_coord, y_coord))
-
-    return coords_lst
+                x_coord = float(coords[0])
+                y_coord = float(coords[1])
+                coords_lst.append((x_coord, y_coord))
+        return coords_lst
+    except FileNotFoundError:
+        return coords_lst
 
 
 def parse_dicom_file(filename):
